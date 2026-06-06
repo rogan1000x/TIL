@@ -1,0 +1,57 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #050a0f;
+  color: #00ffcc;
+  font-family: 'Courier New', monospace;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-container {
+  width: 600px;
+  height: 600px;
+  border: 1px solid #00ffcc;
+  display: flex;
+  flex-direction: column;
+}
+
+#hud {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #00ffcc;
+  font-size: 14px;
+}
+
+#game-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#input-zone {
+  padding: 12px 16px;
+  border-top: 1px solid #00ffcc;
+}
+
+#type-input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #00ffcc;
+  color: #00ffcc;
+  font-size: 18px;
+  padding: 8px 12px;
+  outline: none;
+  font-family: 'Courier New', monospace;
+}
+
+#type-input::placeholder {
+  color: rgba(0, 255, 204, 0.3);
+}
