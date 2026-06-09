@@ -72,6 +72,10 @@ input.addEventListener('keydown', function(event) {
       if (word.textContent === typed) {
         word.remove();
         input.value = '';
+
+        // 점수 올리기
+const scoreEl = document.getElementById('score');
+scoreEl.textContent = parseInt(scoreEl.textContent) + 10;
       }
     });
   }
