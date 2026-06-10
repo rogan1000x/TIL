@@ -54,8 +54,19 @@ function fallWords() {
     word.style.top = top + 'px';
 
     if (top > 500) {
-      word.remove();
-    }
+  word.remove();
+  
+  // HP 깎기
+  const hpEl = document.getElementById('hp');
+  const currentHp = parseInt(hpEl.textContent);
+  hpEl.textContent = currentHp - 10;
+
+  // 게임오버 체크
+  if (currentHp - 10 <= 0) {
+    alert('게임오버! 최종 점수: ' + document.getElementById('score').textContent);
+    location.reload();
+  }
+}
   });
 }
 
