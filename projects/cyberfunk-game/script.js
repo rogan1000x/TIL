@@ -51,7 +51,7 @@ function createWord() {
   const div = document.createElement('div');
   div.textContent = getRandomWord();
   div.style.position = 'absolute';
-  div.style.color = '#00ffcc';
+  div.style.color = '#ff2d9b';
   div.style.fontSize = '20px';
   div.style.left = getSafeLeft(gameArea) + 'px';
   div.style.top = '0px';
@@ -69,7 +69,13 @@ function fallWords() {
 
   words.forEach(function (word) {
     let top = parseInt(word.style.top);
-    top += 2;
+    
+    // 레벨에 따라 속도 증가
+    // - 레벨 1: 2px, 레벨 2: 3px, 레벨 3: 4px ...
+    const level = parseInt(document.getElementById('level').textContent);
+    const speed = 1 + level;
+    top += speed;
+
     word.style.top = top + 'px';
 
     if (top > 500) {
@@ -101,7 +107,7 @@ const input = document.getElementById('type-input');
 
 input.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
-    const typed = input.value.trim();
+    const typed = input.value.trim();fallWords 
     const gameArea = document.getElementById('game-area');
     const words = gameArea.querySelectorAll('div');
 
@@ -125,9 +131,35 @@ window.onload = function () {
     location.reload();
   });
 
-  // 2초마다 단어 생성
-  setInterval(createWord, 2000);
+  // 레벨업 시스템
+// - 20초마다 레벨 1씩 올라감
+// - 레벨 올라갈수록 단어 생성 속도 빨라짐
+function levelUp() {
+  if (isGameOver) return;
 
-  // 16ms마다 떨어뜨리기 (60fps)
-  setInterval(fallWords, 16);
+  // 현재 레벨 읽어서 +1
+  const levelEl = document.getElementById('level');
+  const newLevel = parseInt(levelEl.textContent) + 1;
+  levelEl.textContent = newLevel;
+}
+
+// 20초마다 레벨업
+setInterval(levelUp, 20000);
+
+// 단어 생성 속도 (레벨에 따라 빨라짐)
+// - 레벨 1: 2000ms, 레벨 2: 1800ms, 레벨 3: 1600ms ...
+function startSpawning() {
+  if (isGameOver) return;
+  const level = parseInt(document.getElementById('level').textContent);
+  const interval = Math.max(500, 2000 - (level - 1) * 200);
+
+  createWord();
+  setTimeout(startSpawning, interval);
+}
+
+// 게임 시작
+startSpawning();
+
+// 16ms마다 떨어뜨리기 (60fps)
+setInterval(fallWords, 16);
 };
