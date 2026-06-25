@@ -1,16 +1,11 @@
 // 게임 상태 변수
-// - isGameOver: 게임이 끝났는지 여부 (true/false)
 let isGameOver = false;
+let combo = 1;
 
-// 랜덤 단어 하나 뽑기
-// - Math.random(): 0~1 사이 랜덤 숫자
-// - Math.floor(): 소수점 버리고 정수로 변환
 function getRandomWord() {
   return WORDS[Math.floor(Math.random() * WORDS.length)];
 }
 
-// 겹치지 않는 위치 찾기
-// - 가로(left)뿐만 아니라 세로(top)도 체크해서 겹치지 않게 함
 function getSafeLeft(gameArea) {
   const existing = gameArea.querySelectorAll('div');
   const wordWidth = 100;
@@ -26,7 +21,6 @@ function getSafeLeft(gameArea) {
       const existingLeft = parseInt(word.style.left);
       const existingTop = parseInt(word.style.top);
 
-      // 가로, 세로 둘 다 가까우면 겹친다고 판단
       const tooClose =
         Math.abs(left - existingLeft) < wordWidth &&
         existingTop < wordHeight;
@@ -41,9 +35,6 @@ function getSafeLeft(gameArea) {
   return Math.floor(Math.random() * maxLeft);
 }
 
-// 단어 화면에 만들기
-// - createElement: JavaScript로 HTML 요소 생성
-// - appendChild: 게임 영역 안에 단어 추가
 function createWord() {
   if (isGameOver) return;
   const gameArea = document.getElementById('game-area');
@@ -52,16 +43,19 @@ function createWord() {
   div.textContent = getRandomWord();
   div.style.position = 'absolute';
   div.style.color = '#ff2d9b';
-  div.style.fontSize = '20px';
+  div.style.fontSize = '18px';
+  div.style.fontWeight = 'bold';
   div.style.left = getSafeLeft(gameArea) + 'px';
   div.style.top = '0px';
+  div.style.padding = '8px 16px';
+  div.style.borderRadius = '20px';
+  div.style.border = '2px solid #00ffff';
+  div.style.backgroundColor = 'rgba(255, 45, 155, 0.15)';
+  div.style.boxShadow = '0 0 15px rgba(255, 45, 155, 0.8), 0 0 30px rgba(0, 255, 255, 0.4)';
 
   gameArea.appendChild(div);
 }
 
-// 단어 떨어뜨리기
-// - setInterval로 16ms마다 실행 = 60fps
-// - top 값을 2씩 늘려서 아래로 이동
 function fallWords() {
   if (isGameOver) return;
   const gameArea = document.getElementById('game-area');
@@ -69,9 +63,7 @@ function fallWords() {
 
   words.forEach(function (word) {
     let top = parseInt(word.style.top);
-    
-    // 레벨에 따라 속도 증가
-    // - 레벨 1: 2px, 레벨 2: 3px, 레벨 3: 4px ...
+
     const level = parseInt(document.getElementById('level').textContent);
     const speed = 1 + level;
     top += speed;
@@ -81,12 +73,24 @@ function fallWords() {
     if (top > 500) {
       word.remove();
 
-      // HP 깎기
-      // - Math.max(0, n): n이 0보다 작아지지 않게 막음
+      // HP 깎기 (단어를 놓쳤을 때만!)
       const hpEl = document.getElementById('hp');
       const currentHp = parseInt(hpEl.textContent);
       const newHp = Math.max(0, currentHp - 10);
       hpEl.textContent = newHp;
+
+      // 점등 효과
+      hpEl.classList.add('flash');
+      setTimeout(() => hpEl.classList.remove('flash'), 600);
+
+      // 실패 애니메이션 (흔들림 + 빨간색)
+      const gameContainer = document.getElementById('game-container');
+      gameContainer.classList.add('fail');
+      setTimeout(() => gameContainer.classList.remove('fail'), 600);
+
+      // 콤보 리셋
+      combo = 1;
+      document.getElementById('combo').textContent = 'x1';
 
       // 게임오버 체크
       if (newHp <= 0) {
@@ -100,14 +104,11 @@ function fallWords() {
   });
 }
 
-// 타이핑으로 단어 맞추기
-// - keydown: 키보드 누를 때 이벤트 발생
-// - event.key === 'Enter': 엔터 키인지 확인
 const input = document.getElementById('type-input');
 
 input.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
-    const typed = input.value.trim();fallWords 
+    const typed = input.value.trim();
     const gameArea = document.getElementById('game-area');
     const words = gameArea.querySelectorAll('div');
 
@@ -116,50 +117,68 @@ input.addEventListener('keydown', function (event) {
         word.remove();
         input.value = '';
 
-        // 점수 올리기
+        // 점수 올리기 (콤보에 따라 배수 적용)
         const scoreEl = document.getElementById('score');
-        scoreEl.textContent = parseInt(scoreEl.textContent) + 10;
+        const points = 10 * combo;
+        scoreEl.textContent = parseInt(scoreEl.textContent) + points;
+
+        // 점등 효과
+        scoreEl.classList.add('flash');
+        setTimeout(() => scoreEl.classList.remove('flash'), 600);
+
+        // 게임 테두리 점등
+        const gameContainer = document.getElementById('game-container');
+        gameContainer.classList.add('success');
+        setTimeout(() => gameContainer.classList.remove('success'), 500);
+
+        // 콤보 올리기
+        combo++;
+        const comboEl = document.getElementById('combo');
+        comboEl.textContent = 'x' + combo;
+
+        // 점등 효과
+        comboEl.classList.add('flash');
+        setTimeout(() => comboEl.classList.remove('flash'), 600);
       }
     });
   }
 });
 
-// 재시작 버튼
-// - location.reload(): 페이지 새로고침으로 게임 리셋
 window.onload = function () {
+  // 게임 시작 버튼
+  document.getElementById('start-btn').addEventListener('click', function () {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('game-container').classList.add('active');
+  });
+
   document.getElementById('restart-btn').addEventListener('click', function () {
     location.reload();
   });
 
-  // 레벨업 시스템
-// - 20초마다 레벨 1씩 올라감
-// - 레벨 올라갈수록 단어 생성 속도 빨라짐
-function levelUp() {
-  if (isGameOver) return;
+  function levelUp() {
+    if (isGameOver) return;
 
-  // 현재 레벨 읽어서 +1
-  const levelEl = document.getElementById('level');
-  const newLevel = parseInt(levelEl.textContent) + 1;
-  levelEl.textContent = newLevel;
-}
+    const levelEl = document.getElementById('level');
+    const newLevel = parseInt(levelEl.textContent) + 1;
+    levelEl.textContent = newLevel;
 
-// 20초마다 레벨업
-setInterval(levelUp, 20000);
+    // 점등 효과
+    levelEl.classList.add('flash');
+    setTimeout(() => levelEl.classList.remove('flash'), 600);
+  }
 
-// 단어 생성 속도 (레벨에 따라 빨라짐)
-// - 레벨 1: 2000ms, 레벨 2: 1800ms, 레벨 3: 1600ms ...
-function startSpawning() {
-  if (isGameOver) return;
-  const level = parseInt(document.getElementById('level').textContent);
-  const interval = Math.max(500, 2000 - (level - 1) * 200);
+  setInterval(levelUp, 20000);
 
-  createWord();
-  setTimeout(startSpawning, interval);
-}
+  function startSpawning() {
+    if (isGameOver) return;
+    const level = parseInt(document.getElementById('level').textContent);
+    const interval = Math.max(500, 2000 - (level - 1) * 200);
 
-// 게임 시작
-startSpawning();
+    createWord();
+    setTimeout(startSpawning, interval);
+  }
 
-// 16ms마다 떨어뜨리기 (60fps)
-setInterval(fallWords, 16);
+  startSpawning();
+
+  setInterval(fallWords, 16);
 };
