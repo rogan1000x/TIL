@@ -14,13 +14,22 @@
     <h1>SEOUL-2077</h1>
     <h2>HANGUL BREACH</h2>
     <p>흘러내리는 한글을 타이핑해서 막아라</p>
+    <p style="font-size: 14px; color: rgba(255, 45, 155, 0.7);">
+      최고 점수: <span id="best-score-start">0</span>
+    </p>
     <button id="start-btn">[ 게임 시작 ]</button>
   </div>
 
   <div id="game-container">
+    <div id="countdown">
+    <div id="countdown-text">3</div>
+  </div>
     <div id="gameover">
       <h1>GAME OVER</h1>
       <p>최종 점수: <span id="final-score">0</span></p>
+      <p style="font-size: 16px; color: #00ffff;">
+        최고 점수: <span id="best-score">0</span>
+      </p>
       <button id="restart-btn">[ 재시작 ]</button>
     </div>
 
