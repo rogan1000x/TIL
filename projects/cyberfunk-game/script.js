@@ -1,3 +1,129 @@
+// 시작 버튼 소리 (준비 완료음)
+function playStartSound() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  // 첫 번째 음
+  const osc1 = audioContext.createOscillator();
+  const gain1 = audioContext.createGain();
+  osc1.connect(gain1);
+  gain1.connect(audioContext.destination);
+  osc1.frequency.value = 500;
+  gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+  osc1.start(audioContext.currentTime);
+  osc1.stop(audioContext.currentTime + 0.1);
+
+  // 두 번째 음 (더 높음)
+  const osc2 = audioContext.createOscillator();
+  const gain2 = audioContext.createGain();
+  osc2.connect(gain2);
+  gain2.connect(audioContext.destination);
+  osc2.frequency.value = 700;
+  gain2.gain.setValueAtTime(0.3, audioContext.currentTime + 0.12);
+  gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.22);
+  osc2.start(audioContext.currentTime + 0.12);
+  osc2.stop(audioContext.currentTime + 0.22);
+}
+
+// 카운트 소리 (각 숫자마다 비프)
+function playCountSound() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.value = 900; // 높은 음
+  oscillator.type = 'sine';
+
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.08);
+}
+
+// 버튼 클릭 소리
+function playClickSound() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.value = 600;
+  oscillator.type = 'sine';
+
+  gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.05);
+}
+
+// 사운드 효과
+function playSuccessSound() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.value = 800;
+  oscillator.type = 'sine';
+
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+function playFailSound() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.value = 400;
+  oscillator.type = 'sine';
+
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.2);
+}
+
+function playGameOverSound() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const osc1 = audioContext.createOscillator();
+  const gain1 = audioContext.createGain();
+  osc1.connect(gain1);
+  gain1.connect(audioContext.destination);
+  osc1.frequency.value = 600;
+  gain1.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gain1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+  osc1.start(audioContext.currentTime);
+  osc1.stop(audioContext.currentTime + 0.15);
+
+  const osc2 = audioContext.createOscillator();
+  const gain2 = audioContext.createGain();
+  osc2.connect(gain2);
+  gain2.connect(audioContext.destination);
+  osc2.frequency.value = 400;
+  gain2.gain.setValueAtTime(0.3, audioContext.currentTime + 0.2);
+  gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.35);
+  osc2.start(audioContext.currentTime + 0.2);
+  osc2.stop(audioContext.currentTime + 0.35);
+}
+
 // 게임 상태 변수
 let isGameOver = false;
 let combo = 1;
@@ -90,6 +216,8 @@ function fallWords() {
       const newHp = Math.max(0, currentHp - 10);
       hpEl.textContent = newHp;
 
+      playFailSound();
+
       hpEl.classList.add('flash');
       setTimeout(() => hpEl.classList.remove('flash'), 600);
 
@@ -104,6 +232,8 @@ function fallWords() {
         isGameOver = true;
         const currentScore = parseInt(document.getElementById('score').textContent);
         saveBestScore(currentScore);
+
+        playGameOverSound();
 
         const gameover = document.getElementById('gameover');
         gameover.style.display = 'flex';
@@ -130,6 +260,8 @@ input.addEventListener('keydown', function (event) {
         const points = 10 * combo;
         scoreEl.textContent = parseInt(scoreEl.textContent) + points;
 
+        playSuccessSound();
+
         scoreEl.classList.add('flash');
         setTimeout(() => scoreEl.classList.remove('flash'), 600);
 
@@ -148,7 +280,6 @@ input.addEventListener('keydown', function (event) {
   }
 });
 
-// 카운터 함수
 function showCountdown() {
   const countdown = document.getElementById('countdown');
   const countdownText = document.getElementById('countdown-text');
@@ -161,6 +292,8 @@ function showCountdown() {
     void countdownText.offsetHeight;
     countdownText.textContent = count;
     countdownText.classList.add('countdown-text');
+
+    playCountSound();
 
     count--;
 
@@ -194,13 +327,17 @@ function startSpawning() {
 
 window.onload = function () {
   document.getElementById('start-btn').addEventListener('click', function () {
+    playStartSound();
+
     document.getElementById('start-screen').style.display = 'none';
+
     document.getElementById('game-container').classList.add('active');
     loadBestScore();
     showCountdown();
   });
 
   document.getElementById('restart-btn').addEventListener('click', function () {
+    playClickSound();
     location.reload();
   });
 

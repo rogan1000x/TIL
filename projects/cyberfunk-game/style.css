@@ -373,3 +373,134 @@ body {
     opacity: 0;
   }
 }
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  #game-container {
+    width: 90vw;
+    height: 90vh;
+    max-width: 600px;
+    max-height: 600px;
+  }
+
+  #start-screen h1 {
+    font-size: 48px;
+  }
+
+  #start-screen h2 {
+    font-size: 24px;
+  }
+
+  #start-screen p {
+    font-size: 14px;
+  }
+
+  #gameover h1 {
+    font-size: 36px;
+  }
+
+  #gameover p {
+    font-size: 16px;
+  }
+
+  #hud {
+    font-size: 12px;
+  }
+
+  #type-input {
+    font-size: 16px;
+  }
+}
+
+/* 작은 모바일 폰 (아이폰 SE 등) */
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+
+  #game-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  #start-screen {
+    padding: 20px;
+  }
+
+  #start-screen h1 {
+    font-size: 36px;
+    letter-spacing: 4px;
+  }
+
+  #start-screen h2 {
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+
+  #start-screen p {
+    font-size: 12px;
+  }
+
+  #start-screen button {
+    font-size: 14px;
+    padding: 12px 24px;
+  }
+
+  #hud {
+    font-size: 11px;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  #hud span {
+    display: block;
+    text-align: center;
+  }
+
+  #gameover {
+    padding: 20px;
+  }
+
+  #gameover h1 {
+    font-size: 28px;
+    letter-spacing: 4px;
+  }
+
+  #gameover p {
+    font-size: 14px;
+  }
+
+  #gameover button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  #type-input {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  #countdown-text {
+    font-size: 80px;
+  }
+}
+
+/* 초소형 폰 */
+@media (max-width: 375px) {
+  #start-screen h1 {
+    font-size: 32px;
+  }
+
+  #gameover h1 {
+    font-size: 24px;
+  }
+
+  #hud {
+    font-size: 10px;
+  }
+
+  #countdown-text {
+    font-size: 60px;
+  }
+}
