@@ -507,3 +507,17 @@ body {
     font-size: 60px;
   }
 }
+
+#robot-helper {
+  position: absolute;
+  bottom: 120px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+#robot-helper svg {
+  filter: drop-shadow(0 0 10px #00ffff);
+}
