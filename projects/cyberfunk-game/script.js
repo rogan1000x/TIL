@@ -1,3 +1,77 @@
+// 난이도 시스템
+let currentDifficulty = 'EASY';
+
+// 게임 시작 시간 추적
+let gameStartTime = 0;
+
+function getGameElapsedSeconds() {
+  if (gameStartTime === 0) return 0;
+  return Math.floor((Date.now() - gameStartTime) / 1000);
+}
+
+function getDifficultyByCombo(comboCount) {
+  const elapsedSeconds = getGameElapsedSeconds();
+  let baseDifficulty = 'EASY';
+  
+  // 시간에 따른 기본 난이도 상향
+  if (elapsedSeconds >= 60) {
+    baseDifficulty = 'HARD';
+  } else if (elapsedSeconds >= 30) {
+    baseDifficulty = 'NORMAL';
+  }
+  
+  // 콤보로 추가 난이도 상향
+  if (comboCount >= 6) {
+    return 'HARD';
+  } else if (comboCount >= 3) {
+    return baseDifficulty === 'HARD' ? 'HARD' : 'NORMAL';
+  }
+  
+  return baseDifficulty;
+}
+
+let previousDifficulty = 'EASY';
+
+function updateDifficulty() {
+  const newDifficulty = getDifficultyByCombo(combo);
+  
+  // 콤보가 1로 리셋되면 1단계만 내려감
+  if (combo === 1 && previousDifficulty !== 'EASY') {
+    if (previousDifficulty === 'HARD') {
+      currentDifficulty = 'NORMAL';
+    } else if (previousDifficulty === 'NORMAL') {
+      currentDifficulty = 'EASY';
+    } else {
+      currentDifficulty = 'EASY';
+    }
+  } else {
+    currentDifficulty = newDifficulty;
+  }
+  
+  previousDifficulty = currentDifficulty;
+  document.getElementById('difficulty').textContent = currentDifficulty;
+}
+
+// 난이도별 설정
+const difficultySettings = {
+  'EASY': {
+    spawnInterval: 2500,  // 2.5초마다 단어 생성
+    fallSpeed: 1          // 떨어지는 속도 1px
+  },
+  'NORMAL': {
+    spawnInterval: 2000,  // 2초마다 단어 생성
+    fallSpeed: 2          // 떨어지는 속도 2px
+  },
+  'HARD': {
+    spawnInterval: 1500,  // 1.5초마다 단어 생성
+    fallSpeed: 3          // 떨어지는 속도 3px
+  }
+};
+
+function getDifficultySettings() {
+  return difficultySettings[currentDifficulty];
+}
+
 // 시작 버튼 소리 (준비 완료음)
 function playStartSound() {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -203,8 +277,8 @@ function fallWords() {
 
   words.forEach(function (word) {
     let top = parseInt(word.style.top);
-    const level = parseInt(document.getElementById('level').textContent);
-    const speed = 1 + level;
+    const settings = getDifficultySettings();
+    const speed = settings.fallSpeed;
     top += speed;
     word.style.top = top + 'px';
 
@@ -225,8 +299,11 @@ function fallWords() {
       gameContainer.classList.add('fail');
       setTimeout(() => gameContainer.classList.remove('fail'), 600);
 
+      // 콤보 리셋
       combo = 1;
       document.getElementById('combo').textContent = 'x1';
+
+      updateDifficulty();
 
       if (newHp <= 0) {
         isGameOver = true;
@@ -273,8 +350,11 @@ input.addEventListener('keydown', function (event) {
         const comboEl = document.getElementById('combo');
         comboEl.textContent = 'x' + combo;
 
+        // 점등 효과
         comboEl.classList.add('flash');
         setTimeout(() => comboEl.classList.remove('flash'), 600);
+
+        updateDifficulty();
       }
     });
   }
@@ -300,6 +380,9 @@ function showCountdown() {
     if (count < 0) {
       clearInterval(interval);
       countdown.classList.remove('active');
+
+      gameStartTime = Date.now();
+
       startSpawning();
       setInterval(fallWords, 16);
     }
@@ -318,8 +401,8 @@ function levelUp() {
 
 function startSpawning() {
   if (isGameOver) return;
-  const level = parseInt(document.getElementById('level').textContent);
-  const interval = Math.max(500, 2000 - (level - 1) * 200);
+  const settings = getDifficultySettings();
+  const interval = settings.spawnInterval;
 
   createWord();
   setTimeout(startSpawning, interval);
@@ -345,35 +428,35 @@ window.onload = function () {
 };
 
 // 스크린샷 기능 (SNS 공유용)
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('screenshot-btn').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('screenshot-btn').addEventListener('click', function () {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    
+
     canvas.width = 800;
     canvas.height = 600;
-    
+
     // 배경 그라데이션
     ctx.fillStyle = '#0d0015';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#1a0033';
-    ctx.fillRect(0, canvas.height/2, canvas.width, canvas.height/2);
-    
+    ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
+
     // 테두리
     ctx.strokeStyle = '#ff2d9b';
     ctx.lineWidth = 3;
     ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-    
+
     // 게임 제목
     ctx.fillStyle = '#ff2d9b';
     ctx.font = 'bold 56px Arial';
     ctx.textAlign = 'center';
     ctx.fillText('SEOUL-2077', canvas.width / 2, 120);
-    
+
     ctx.font = 'bold 36px Arial';
     ctx.fillStyle = '#00ffff';
     ctx.fillText('HANGUL BREACH', canvas.width / 2, 170);
-    
+
     // 구분선
     ctx.strokeStyle = '#ff2d9b';
     ctx.lineWidth = 1;
@@ -381,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.moveTo(100, 200);
     ctx.lineTo(canvas.width - 100, 200);
     ctx.stroke();
-    
+
     // 게임 통계
     ctx.font = '28px Arial';
     ctx.fillStyle = '#ff2d9b';
@@ -389,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const bestScore = document.getElementById('best-score').textContent;
     const level = document.getElementById('level').textContent;
     const combo = document.getElementById('combo').textContent;
-    
+
     ctx.textAlign = 'left';
     ctx.fillText(`최종 점수: ${finalScore}`, 120, 280);
     ctx.fillStyle = '#00ffff';
@@ -398,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.fillText(`도달 레벨: ${level}`, 120, 380);
     ctx.fillStyle = '#00ffff';
     ctx.fillText(`최대 콤보: ${combo}`, 120, 430);
-    
+
     // 구분선
     ctx.strokeStyle = '#ff2d9b';
     ctx.lineWidth = 1;
@@ -406,23 +489,23 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.moveTo(100, 460);
     ctx.lineTo(canvas.width - 100, 460);
     ctx.stroke();
-    
+
     // 게임 링크 및 정보
     ctx.font = '20px Arial';
     ctx.fillStyle = '#00ffff';
     ctx.textAlign = 'center';
     ctx.fillText('지금 바로 플레이!', canvas.width / 2, 510);
-    
+
     ctx.font = 'bold 18px Arial';
     ctx.fillStyle = '#ff2d9b';
     ctx.fillText('cyberfunk-hangle.netlify.app', canvas.width / 2, 550);
-    
+
     // 다운로드
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
     link.download = `SEOUL-2077-${finalScore}-${new Date().getTime()}.png`;
     link.click();
-    
+
     playClickSound();
   });
 });
