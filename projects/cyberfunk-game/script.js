@@ -343,3 +343,86 @@ window.onload = function () {
 
   setInterval(levelUp, 20000);
 };
+
+// 스크린샷 기능 (SNS 공유용)
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('screenshot-btn').addEventListener('click', function() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = 800;
+    canvas.height = 600;
+    
+    // 배경 그라데이션
+    ctx.fillStyle = '#0d0015';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#1a0033';
+    ctx.fillRect(0, canvas.height/2, canvas.width, canvas.height/2);
+    
+    // 테두리
+    ctx.strokeStyle = '#ff2d9b';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+    
+    // 게임 제목
+    ctx.fillStyle = '#ff2d9b';
+    ctx.font = 'bold 56px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('SEOUL-2077', canvas.width / 2, 120);
+    
+    ctx.font = 'bold 36px Arial';
+    ctx.fillStyle = '#00ffff';
+    ctx.fillText('HANGUL BREACH', canvas.width / 2, 170);
+    
+    // 구분선
+    ctx.strokeStyle = '#ff2d9b';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(100, 200);
+    ctx.lineTo(canvas.width - 100, 200);
+    ctx.stroke();
+    
+    // 게임 통계
+    ctx.font = '28px Arial';
+    ctx.fillStyle = '#ff2d9b';
+    const finalScore = document.getElementById('final-score').textContent;
+    const bestScore = document.getElementById('best-score').textContent;
+    const level = document.getElementById('level').textContent;
+    const combo = document.getElementById('combo').textContent;
+    
+    ctx.textAlign = 'left';
+    ctx.fillText(`최종 점수: ${finalScore}`, 120, 280);
+    ctx.fillStyle = '#00ffff';
+    ctx.fillText(`최고 점수: ${bestScore}`, 120, 330);
+    ctx.fillStyle = '#ff2d9b';
+    ctx.fillText(`도달 레벨: ${level}`, 120, 380);
+    ctx.fillStyle = '#00ffff';
+    ctx.fillText(`최대 콤보: ${combo}`, 120, 430);
+    
+    // 구분선
+    ctx.strokeStyle = '#ff2d9b';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(100, 460);
+    ctx.lineTo(canvas.width - 100, 460);
+    ctx.stroke();
+    
+    // 게임 링크 및 정보
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#00ffff';
+    ctx.textAlign = 'center';
+    ctx.fillText('지금 바로 플레이!', canvas.width / 2, 510);
+    
+    ctx.font = 'bold 18px Arial';
+    ctx.fillStyle = '#ff2d9b';
+    ctx.fillText('cyberfunk-hangle.netlify.app', canvas.width / 2, 550);
+    
+    // 다운로드
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `SEOUL-2077-${finalScore}-${new Date().getTime()}.png`;
+    link.click();
+    
+    playClickSound();
+  });
+});

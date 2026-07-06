@@ -109,6 +109,9 @@ body {
   font-family: 'Courier New', monospace;
   letter-spacing: 2px;
   text-shadow: 0 0 8px rgba(255, 45, 155, 0.8);
+  box-shadow: 0 0 20px rgba(255, 45, 155, 0.3);
+  transition: all 0.3s;
+  margin: 10px;
 }
 
 #gameover button:hover {
