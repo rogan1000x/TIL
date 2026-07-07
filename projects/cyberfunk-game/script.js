@@ -1,7 +1,9 @@
-// 난이도 시스템
-let currentDifficulty = 'EASY';
+// 게임 상태 변수
+let isGameOver = false;
+let combo = 1;
 
-// 게임 시작 시간 추적
+// 난이도 시스템 (10단계)
+let currentDifficultyLevel = 1;
 let gameStartTime = 0;
 
 function getGameElapsedSeconds() {
@@ -9,71 +11,65 @@ function getGameElapsedSeconds() {
   return Math.floor((Date.now() - gameStartTime) / 1000);
 }
 
-function getDifficultyByCombo(comboCount) {
+function getDifficultyLevel(comboCount) {
   const elapsedSeconds = getGameElapsedSeconds();
-  let baseDifficulty = 'EASY';
-
-  // 시간에 따른 기본 난이도 상향
-  if (elapsedSeconds >= 60) {
-    baseDifficulty = 'HARD';
-  } else if (elapsedSeconds >= 30) {
-    baseDifficulty = 'NORMAL';
+  
+  // 시간 기반 기본 레벨 (10초마다 1레벨)
+  let baseLevel = Math.min(10, Math.floor(elapsedSeconds / 10) + 1);
+  
+  // 콤보로 추가 레벨 상향
+  let bonusLevel = 0;
+  if (comboCount >= 15) {
+    bonusLevel = 3;
+  } else if (comboCount >= 10) {
+    bonusLevel = 2;
+  } else if (comboCount >= 5) {
+    bonusLevel = 1;
   }
-
-  // 콤보로 추가 난이도 상향
-  if (comboCount >= 6) {
-    return 'HARD';
-  } else if (comboCount >= 3) {
-    return baseDifficulty === 'HARD' ? 'HARD' : 'NORMAL';
-  }
-
-  return baseDifficulty;
+  
+  return Math.min(10, baseLevel + bonusLevel);
 }
 
-let previousDifficulty = 'EASY';
+// 난이도별 설정 (10단계)
+const difficultySettings = {
+  1: { spawnInterval: 2500, fallSpeed: 1 },
+  2: { spawnInterval: 2300, fallSpeed: 1.5 },
+  3: { spawnInterval: 2100, fallSpeed: 2 },
+  4: { spawnInterval: 1900, fallSpeed: 2.5 },
+  5: { spawnInterval: 1700, fallSpeed: 3 },
+  6: { spawnInterval: 1500, fallSpeed: 3.5 },
+  7: { spawnInterval: 1300, fallSpeed: 4.5 },
+  8: { spawnInterval: 1100, fallSpeed: 5.5 },
+  9: { spawnInterval: 900, fallSpeed: 7 },
+  10: { spawnInterval: 700, fallSpeed: 8.5 }
+};
+
+function getDifficultySettings() {
+  return difficultySettings[currentDifficultyLevel];
+}
+
+let previousDifficultyLevel = 1;
 
 function updateDifficulty() {
-  const newDifficulty = getDifficultyByCombo(combo);
+  const newLevel = getDifficultyLevel(combo);
   
-  // 콤보가 1로 리셋되면 1단계만 내려감 (단, 시간 기반 난이도 이상으로)
-  if (combo === 1 && previousDifficulty !== 'EASY') {
-    const baseDifficulty = getDifficultyByCombo(0); // 콤보 0일 때 난이도 (시간 기반만)
-    
-    if (previousDifficulty === 'HARD') {
-      currentDifficulty = 'NORMAL'; // HARD → NORMAL
-    } else if (previousDifficulty === 'NORMAL') {
-      currentDifficulty = 'EASY';   // NORMAL → EASY
-    } else {
-      currentDifficulty = 'EASY';
-    }
-    
-    // 하지만 시간 기반 난이도보다 낮아질 수 없음
-    if (currentDifficulty === 'EASY' && baseDifficulty !== 'EASY') {
-      currentDifficulty = baseDifficulty;
-    }
+  // 콤보 리셋 시 1레벨만 내려감
+  if (combo === 1 && previousDifficultyLevel > 1) {
+    const baseLevel = getDifficultyLevel(0);
+    currentDifficultyLevel = Math.max(baseLevel, previousDifficultyLevel - 1);
   } else {
-    currentDifficulty = newDifficulty;
+    currentDifficultyLevel = newLevel;
   }
   
-  previousDifficulty = currentDifficulty;
-  document.getElementById('difficulty').textContent = currentDifficulty;
+  previousDifficultyLevel = currentDifficultyLevel;
+  document.getElementById('difficulty').textContent = 'Lv' + currentDifficultyLevel;
 }
 
-// 난이도별 설정
-const difficultySettings = {
-  'EASY': {
-    spawnInterval: 2500,  // 2.5초마다 단어 생성
-    fallSpeed: 1          // 떨어지는 속도 1px
-  },
-  'NORMAL': {
-    spawnInterval: 2000,  // 2초마다 단어 생성
-    fallSpeed: 2          // 떨어지는 속도 2px
-  },
-  'HARD': {
-    spawnInterval: 1500,  // 1.5초마다 단어 생성
-    fallSpeed: 3          // 떨어지는 속도 3px
-  }
-};
+// 게임 시간 업데이트
+function updateGameTime() {
+  const seconds = getGameElapsedSeconds();
+  document.getElementById('game-time').textContent = seconds + 's';
+}
 
 function getDifficultySettings() {
   return difficultySettings[currentDifficulty];
@@ -205,9 +201,6 @@ function playGameOverSound() {
   osc2.stop(audioContext.currentTime + 0.35);
 }
 
-// 게임 상태 변수
-let isGameOver = false;
-let combo = 1;
 
 // 최고 점수 관련
 function loadBestScore() {
@@ -418,15 +411,15 @@ function showCountdown() {
 
     count--;
 
-    if (count < 0) {
-      clearInterval(interval);
-      countdown.classList.remove('active');
-
-      gameStartTime = Date.now();
-
-      startSpawning();
-      setInterval(fallWords, 16);
-    }
+if (count < 0) {
+  clearInterval(interval);
+  countdown.classList.remove('active');
+  
+  gameStartTime = Date.now();  // ← 이 줄 추가
+  
+  startSpawning();
+  setInterval(fallWords, 16);
+}
   }, 1500);
 }
 
@@ -466,6 +459,9 @@ window.onload = function () {
   });
 
   setInterval(levelUp, 20000);
+
+    // 게임 시간 실시간 업데이트
+  setInterval(updateGameTime, 500);
 };
 
 // 스크린샷 기능 (SNS 공유용)
