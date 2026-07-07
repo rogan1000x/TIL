@@ -12,21 +12,21 @@ function getGameElapsedSeconds() {
 function getDifficultyByCombo(comboCount) {
   const elapsedSeconds = getGameElapsedSeconds();
   let baseDifficulty = 'EASY';
-  
+
   // 시간에 따른 기본 난이도 상향
   if (elapsedSeconds >= 60) {
     baseDifficulty = 'HARD';
   } else if (elapsedSeconds >= 30) {
     baseDifficulty = 'NORMAL';
   }
-  
+
   // 콤보로 추가 난이도 상향
   if (comboCount >= 6) {
     return 'HARD';
   } else if (comboCount >= 3) {
     return baseDifficulty === 'HARD' ? 'HARD' : 'NORMAL';
   }
-  
+
   return baseDifficulty;
 }
 
@@ -35,14 +35,21 @@ let previousDifficulty = 'EASY';
 function updateDifficulty() {
   const newDifficulty = getDifficultyByCombo(combo);
   
-  // 콤보가 1로 리셋되면 1단계만 내려감
+  // 콤보가 1로 리셋되면 1단계만 내려감 (단, 시간 기반 난이도 이상으로)
   if (combo === 1 && previousDifficulty !== 'EASY') {
+    const baseDifficulty = getDifficultyByCombo(0); // 콤보 0일 때 난이도 (시간 기반만)
+    
     if (previousDifficulty === 'HARD') {
-      currentDifficulty = 'NORMAL';
+      currentDifficulty = 'NORMAL'; // HARD → NORMAL
     } else if (previousDifficulty === 'NORMAL') {
-      currentDifficulty = 'EASY';
+      currentDifficulty = 'EASY';   // NORMAL → EASY
     } else {
       currentDifficulty = 'EASY';
+    }
+    
+    // 하지만 시간 기반 난이도보다 낮아질 수 없음
+    if (currentDifficulty === 'EASY' && baseDifficulty !== 'EASY') {
+      currentDifficulty = baseDifficulty;
     }
   } else {
     currentDifficulty = newDifficulty;
@@ -305,6 +312,13 @@ function fallWords() {
 
       updateDifficulty();
 
+      // 로봇 흔들기
+      const robotSvg = document.getElementById('robot-svg');
+      robotSvg.classList.remove('shaking');
+      void robotSvg.offsetHeight;
+      robotSvg.classList.add('shaking');
+      setTimeout(() => robotSvg.classList.remove('shaking'), 500);
+
       if (newHp <= 0) {
         isGameOver = true;
         const currentScore = parseInt(document.getElementById('score').textContent);
@@ -325,11 +339,15 @@ const input = document.getElementById('type-input');
 input.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
     const typed = input.value.trim();
+    if (typed === '') return; // 빈 입력 제외
+    
     const gameArea = document.getElementById('game-area');
     const words = gameArea.querySelectorAll('div');
+    let found = false;
 
     words.forEach(function (word) {
       if (word.textContent === typed) {
+        found = true;
         word.remove();
         input.value = '';
 
@@ -350,13 +368,36 @@ input.addEventListener('keydown', function (event) {
         const comboEl = document.getElementById('combo');
         comboEl.textContent = 'x' + combo;
 
-        // 점등 효과
         comboEl.classList.add('flash');
         setTimeout(() => comboEl.classList.remove('flash'), 600);
-
         updateDifficulty();
+
+        // 로봇 춤추기
+        const robotSvg = document.getElementById('robot-svg');
+        robotSvg.classList.remove('dancing');
+        void robotSvg.offsetHeight;
+        robotSvg.classList.add('dancing');
+        setTimeout(() => robotSvg.classList.remove('dancing'), 600);
       }
     });
+
+    // 틀렸을 때 처리
+    if (!found && typed !== '') {
+      input.value = '';
+      playFailSound();
+
+      // 로봇 놀라기
+      const robotSvg = document.getElementById('robot-svg');
+      robotSvg.classList.remove('surprised');
+      void robotSvg.offsetHeight;
+      robotSvg.classList.add('surprised');
+      setTimeout(() => robotSvg.classList.remove('surprised'), 400);
+
+      // 화면 깜빡이기
+      const gameContainer = document.getElementById('game-container');
+      gameContainer.classList.add('fail');
+      setTimeout(() => gameContainer.classList.remove('fail'), 300);
+    }
   }
 });
 

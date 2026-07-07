@@ -73,18 +73,21 @@ body {
 
 #gameover {
   display: none;
-  position: fixed;  /* ← absolute → fixed 로 변경 */
+  position: fixed;
+  /* ← absolute → fixed 로 변경 */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(13, 0, 21, 0.98);  /* ← 0.95 → 0.98 (더 불투명하게) */
+  background: rgba(13, 0, 21, 0.98);
+  /* ← 0.95 → 0.98 (더 불투명하게) */
   color: #ff2d9b;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  z-index: 9999;  /* ← z-index 높이기 */
+  z-index: 9999;
+  /* ← z-index 높이기 */
 }
 
 #gameover h1 {
@@ -138,8 +141,8 @@ body {
   font-size: 64px;
   color: #ff2d9b;
   text-shadow: 0 0 30px #ff2d9b,
-               0 0 60px #ff2d9b,
-               0 0 90px rgba(255, 45, 155, 0.5);
+    0 0 60px #ff2d9b,
+    0 0 90px rgba(255, 45, 155, 0.5);
   letter-spacing: 8px;
   animation: neonFlicker 0.15s infinite;
 }
@@ -148,7 +151,7 @@ body {
   font-size: 36px;
   color: #00ffff;
   text-shadow: 0 0 20px #00ffff,
-               0 0 40px #00ffff;
+    0 0 40px #00ffff;
   letter-spacing: 4px;
 }
 
@@ -169,26 +172,37 @@ body {
   letter-spacing: 3px;
   text-shadow: 0 0 10px #ff2d9b;
   box-shadow: 0 0 20px #ff2d9b,
-              inset 0 0 20px rgba(255, 45, 155, 0.2);
+    inset 0 0 20px rgba(255, 45, 155, 0.2);
   transition: all 0.3s;
 }
 
 #start-screen button:hover {
   background: rgba(255, 45, 155, 0.2);
   box-shadow: 0 0 30px #ff2d9b,
-              inset 0 0 30px rgba(255, 45, 155, 0.4);
+    inset 0 0 30px rgba(255, 45, 155, 0.4);
 }
 
 /* 번쩍번쩍 애니메이션 */
 @keyframes neonFlicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
     text-shadow: 0 0 30px #ff2d9b,
-                 0 0 60px #ff2d9b,
-                 0 0 90px rgba(255, 45, 155, 0.5);
+      0 0 60px #ff2d9b,
+      0 0 90px rgba(255, 45, 155, 0.5);
   }
-  20%, 24%, 55% {
+
+  20%,
+  24%,
+  55% {
     text-shadow: 0 0 10px #ff2d9b,
-                 0 0 20px #ff2d9b;
+      0 0 20px #ff2d9b;
   }
 }
 
@@ -202,9 +216,12 @@ body {
 
 /* 제목이 떠올랐다 내려갔다 하는 애니메이션 */
 @keyframes floatUp {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }
@@ -214,24 +231,27 @@ body {
   font-size: 64px;
   color: #ff2d9b;
   text-shadow: 0 0 30px #ff2d9b,
-               0 0 60px #ff2d9b,
-               0 0 90px rgba(255, 45, 155, 0.5);
+    0 0 60px #ff2d9b,
+    0 0 90px rgba(255, 45, 155, 0.5);
   letter-spacing: 8px;
   animation: neonFlicker 0.15s infinite, floatUp 3s ease-in-out infinite;
 }
 
 /* 글자 형광 깜빡이는 애니메이션 */
 @keyframes glowPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     text-shadow: 0 0 5px #ff2d9b,
-                 0 0 10px #ff2d9b,
-                 0 0 15px rgba(255, 45, 155, 0.6);
+      0 0 10px #ff2d9b,
+      0 0 15px rgba(255, 45, 155, 0.6);
     color: #ff2d9b;
   }
+
   50% {
     text-shadow: 0 0 20px #ff2d9b,
-                 0 0 30px #ff2d9b,
-                 0 0 40px rgba(255, 45, 155, 0.8);
+      0 0 30px #ff2d9b,
+      0 0 40px rgba(255, 45, 155, 0.8);
     color: #ff66cc;
   }
 }
@@ -248,11 +268,13 @@ body {
     color: #ff2d9b;
     text-shadow: 0 0 5px #ff2d9b;
   }
+
   50% {
     color: #ffff00;
     text-shadow: 0 0 20px #ffff00,
-                 0 0 30px #ff2d9b;
+      0 0 30px #ff2d9b;
   }
+
   100% {
     color: #ff2d9b;
     text-shadow: 0 0 5px #ff2d9b;
@@ -271,18 +293,20 @@ body {
   0% {
     border-color: #ff2d9b;
     box-shadow: 0 0 30px rgba(255, 45, 155, 0.3),
-                inset 0 0 30px rgba(255, 45, 155, 0.05);
+      inset 0 0 30px rgba(255, 45, 155, 0.05);
   }
+
   50% {
     border-color: #00ffff;
     box-shadow: 0 0 40px rgba(0, 255, 255, 0.6),
-                inset 0 0 40px rgba(0, 255, 255, 0.1),
-                0 0 50px rgba(255, 45, 155, 0.3);
+      inset 0 0 40px rgba(0, 255, 255, 0.1),
+      0 0 50px rgba(255, 45, 155, 0.3);
   }
+
   100% {
     border-color: #ff2d9b;
     box-shadow: 0 0 30px rgba(255, 45, 155, 0.3),
-                inset 0 0 30px rgba(255, 45, 155, 0.05);
+      inset 0 0 30px rgba(255, 45, 155, 0.05);
   }
 }
 
@@ -292,22 +316,33 @@ body {
 
 /* 게임 오버 시 테두리 흔들림 + 빨간색 번쩍 */
 @keyframes failShake {
-  0%, 100% {
+
+  0%,
+  100% {
     border-color: #ff2d9b;
     box-shadow: 0 0 30px rgba(255, 45, 155, 0.3),
-                inset 0 0 30px rgba(255, 45, 155, 0.05);
+      inset 0 0 30px rgba(255, 45, 155, 0.05);
     transform: translateX(0px);
   }
-  10%, 30%, 50%, 70%, 90% {
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     border-color: #ff0000;
     box-shadow: 0 0 40px rgba(255, 0, 0, 0.8),
-                inset 0 0 40px rgba(255, 0, 0, 0.2);
+      inset 0 0 40px rgba(255, 0, 0, 0.2);
     transform: translateX(-5px);
   }
-  20%, 40%, 60%, 80% {
+
+  20%,
+  40%,
+  60%,
+  80% {
     border-color: #ff0000;
     box-shadow: 0 0 40px rgba(255, 0, 0, 0.8),
-                inset 0 0 40px rgba(255, 0, 0, 0.2);
+      inset 0 0 40px rgba(255, 0, 0, 0.2);
     transform: translateX(5px);
   }
 }
@@ -341,8 +376,8 @@ body {
   color: #00ffff;
   font-weight: bold;
   text-shadow: 0 0 40px #00ffff,
-               0 0 80px #00ffff,
-               0 0 120px rgba(0, 255, 255, 0.5);
+    0 0 80px #00ffff,
+    0 0 120px rgba(0, 255, 255, 0.5);
 }
 
 .countdown-text {
@@ -354,9 +389,11 @@ body {
     transform: scale(0.3);
     opacity: 1;
   }
+
   70% {
     opacity: 1;
   }
+
   100% {
     transform: scale(1);
     opacity: 0;
@@ -368,9 +405,11 @@ body {
     transform: scale(0.3);
     opacity: 1;
   }
+
   70% {
     opacity: 1;
   }
+
   100% {
     transform: scale(1);
     opacity: 0;
@@ -520,4 +559,81 @@ body {
 
 #robot-helper svg {
   filter: drop-shadow(0 0 10px #00ffff);
+}
+
+
+/* 로봇 애니메이션 */
+
+/* 팔 춤추기 (콤보 올라갈 때) */
+@keyframes robotDance {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-15deg);
+  }
+
+  75% {
+    transform: rotate(15deg);
+  }
+}
+
+#robot-svg.dancing {
+  animation: robotDance 0.6s ease-in-out;
+}
+
+/* 로봇 흔들리기 (콤보 떨어질 때) */
+@keyframes robotShake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+#robot-svg.shaking {
+  animation: robotShake 0.5s ease-in-out;
+}
+
+/* 로봇 깜빡이기 (높은 콤보) */
+@keyframes robotGlow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px #00ffff);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px #ff2d9b);
+  }
+}
+
+#robot-svg.glowing {
+  animation: robotGlow 0.8s ease-in-out infinite;
+}
+
+/* 로봇 놀라기 (타이핑 틀렸을 때) */
+@keyframes robotSurprise {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+#robot-svg.surprised {
+  animation: robotSurprise 0.4s ease-in-out;
+  filter: drop-shadow(0 0 15px #ff2d9b);
 }
