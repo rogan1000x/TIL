@@ -13,10 +13,10 @@ function getGameElapsedSeconds() {
 
 function getDifficultyLevel(comboCount) {
   const elapsedSeconds = getGameElapsedSeconds();
-  
+
   // 시간 기반 기본 레벨 (10초마다 1레벨)
   let baseLevel = Math.min(10, Math.floor(elapsedSeconds / 10) + 1);
-  
+
   // 콤보로 추가 레벨 상향
   let bonusLevel = 0;
   if (comboCount >= 15) {
@@ -26,7 +26,7 @@ function getDifficultyLevel(comboCount) {
   } else if (comboCount >= 5) {
     bonusLevel = 1;
   }
-  
+
   return Math.min(10, baseLevel + bonusLevel);
 }
 
@@ -52,7 +52,7 @@ let previousDifficultyLevel = 1;
 
 function updateDifficulty() {
   const newLevel = getDifficultyLevel(combo);
-  
+
   // 콤보 리셋 시 1레벨만 내려감
   if (combo === 1 && previousDifficultyLevel > 1) {
     const baseLevel = getDifficultyLevel(0);
@@ -60,7 +60,7 @@ function updateDifficulty() {
   } else {
     currentDifficultyLevel = newLevel;
   }
-  
+
   previousDifficultyLevel = currentDifficultyLevel;
   document.getElementById('difficulty').textContent = 'Lv' + currentDifficultyLevel;
 }
@@ -319,6 +319,9 @@ function fallWords() {
         const gameover = document.getElementById('gameover');
         gameover.style.display = 'flex';
         document.getElementById('final-score').textContent = currentScore;
+
+        // 게임오버 시 입력창 비활성화 
+        document.getElementById('type-input').disabled = true;
       }
     }
   });
@@ -330,7 +333,7 @@ input.addEventListener('keydown', function (event) {
   if (event.key === 'Enter') {
     const typed = input.value.trim();
     if (typed === '') return; // 빈 입력 제외
-    
+
     const gameArea = document.getElementById('game-area');
     const words = gameArea.querySelectorAll('div');
     let found = false;
@@ -408,15 +411,15 @@ function showCountdown() {
 
     count--;
 
-if (count < 0) {
-  clearInterval(interval);
-  countdown.classList.remove('active');
-  
-  gameStartTime = Date.now();  // ← 이 줄 추가
-  
-  startSpawning();
-  setInterval(fallWords, 16);
-}
+    if (count < 0) {
+      clearInterval(interval);
+      countdown.classList.remove('active');
+
+      gameStartTime = Date.now();  // ← 이 줄 추가
+
+      startSpawning();
+      setInterval(fallWords, 16);
+    }
   }, 1500);
 }
 
@@ -457,7 +460,7 @@ window.onload = function () {
 
   setInterval(levelUp, 20000);
 
-    // 게임 시간 실시간 업데이트
+  // 게임 시간 실시간 업데이트
   setInterval(updateGameTime, 500);
 };
 
