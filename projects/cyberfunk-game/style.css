@@ -28,11 +28,16 @@ body {
 
 #hud {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;  /* space-between → space-around */
+  flex-wrap: wrap;  /* 줄 바꿈 허용 */
+  gap: 10px;  /* 항목 간 간격 */
   padding: 12px 16px;
   border-bottom: 1px solid #ff2d9b;
   font-size: 14px;
-  text-shadow: 0 0 8px rgba(255, 45, 155, 0.8);
+}
+
+#hud span {
+  min-width: 100px;  /* 최소 너비 */
 }
 
 #game-area {

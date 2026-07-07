@@ -71,9 +71,6 @@ function updateGameTime() {
   document.getElementById('game-time').textContent = seconds + 's';
 }
 
-function getDifficultySettings() {
-  return difficultySettings[currentDifficulty];
-}
 
 // 시작 버튼 소리 (준비 완료음)
 function playStartSound() {
