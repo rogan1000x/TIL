@@ -6,6 +6,16 @@ let combo = 1;
 let currentDifficultyLevel = 1;
 let gameStartTime = 0;
 
+// Audio Context (전역으로 한 번만 생성)
+let audioContext = null;
+
+function getAudioContext() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioContext;
+}
+
 function getGameElapsedSeconds() {
   if (gameStartTime === 0) return 0;
   return Math.floor((Date.now() - gameStartTime) / 1000);
@@ -74,7 +84,7 @@ function updateGameTime() {
 
 // 시작 버튼 소리 (준비 완료음)
 function playStartSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioContext = getAudioContext();
 
   // 첫 번째 음
   const osc1 = audioContext.createOscillator();
@@ -101,7 +111,8 @@ function playStartSound() {
 
 // 카운트 소리 (각 숫자마다 비프)
 function playCountSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioContext = getAudioContext();
+
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
@@ -120,7 +131,8 @@ function playCountSound() {
 
 // 버튼 클릭 소리
 function playClickSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioContext = getAudioContext();
+
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
@@ -139,7 +151,8 @@ function playClickSound() {
 
 // 사운드 효과
 function playSuccessSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioContext = getAudioContext();
+
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
@@ -157,7 +170,8 @@ function playSuccessSound() {
 }
 
 function playFailSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioContext = getAudioContext();
+  
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
@@ -175,7 +189,7 @@ function playFailSound() {
 }
 
 function playGameOverSound() {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const audioContext = getAudioContext();
 
   const osc1 = audioContext.createOscillator();
   const gain1 = audioContext.createGain();
